@@ -1612,11 +1612,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Marcondes\\OneDrive\\Documentos\\Sistema_Biblioteca_CS\\MyConsoleLibrary\\MyConsoleLibrary.csproj",
+      "projectUniqueName": "C:\\Users\\Marcondes\\OneDrive\\Documentos\\Sistema_Biblioteca_Csharp\\MyConsoleLibrary\\MyConsoleLibrary.csproj",
       "projectName": "MyConsoleLibrary",
-      "projectPath": "C:\\Users\\Marcondes\\OneDrive\\Documentos\\Sistema_Biblioteca_CS\\MyConsoleLibrary\\MyConsoleLibrary.csproj",
+      "projectPath": "C:\\Users\\Marcondes\\OneDrive\\Documentos\\Sistema_Biblioteca_Csharp\\MyConsoleLibrary\\MyConsoleLibrary.csproj",
       "packagesPath": "C:\\Users\\Marcondes\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Marcondes\\OneDrive\\Documentos\\Sistema_Biblioteca_CS\\MyConsoleLibrary\\obj\\",
+      "outputPath": "C:\\Users\\Marcondes\\OneDrive\\Documentos\\Sistema_Biblioteca_Csharp\\MyConsoleLibrary\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Marcondes\\AppData\\Roaming\\NuGet\\NuGet.Config"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FJ2KyfFGpZk=",
+  "dgSpecHash": "TYKcgD/wH6o=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Marcondes\\OneDrive\\Documentos\\Sistema_Biblioteca_CS\\MyConsoleLibrary\\MyConsoleLibrary.csproj",
+  "projectFilePath": "C:\\Users\\Marcondes\\OneDrive\\Documentos\\Sistema_Biblioteca_Csharp\\MyConsoleLibrary\\MyConsoleLibrary.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Marcondes\\.nuget\\packages\\bouncycastle.cryptography\\2.3.1\\bouncycastle.cryptography.2.3.1.nupkg.sha512",
     "C:\\Users\\Marcondes\\.nuget\\packages\\google.protobuf\\3.26.1\\google.protobuf.3.26.1.nupkg.sha512",
