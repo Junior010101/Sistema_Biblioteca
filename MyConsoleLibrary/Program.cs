@@ -1,13 +1,14 @@
 ﻿//Sistema Biblioteca utilizando SQL e C#
 //importações
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Security;
+using ZstdSharp.Unsafe;
 
 class Program{
     //Configurar Conexão
     public static string Connect_Config = "server=localhost; user=root; database=biblioteca_marcondes; port=3306; password=1234";
     public static MySqlConnection Connect = new(Connect_Config);
-    public static bool Permicao = false;
-
+    
     //Conexão
     public static void Main(){
         try{
@@ -26,11 +27,13 @@ class Program{
             Console.WriteLine(ex.ToString());
             Connect.Close();
         }
-
+    }
+    public static bool pass;
+    public static string Usuario;
     //Inicio da Biblioteca
-    static void Lib(){
+    public static void Lib(){
         Console.WriteLine("\nInteraja com minha Biblioteca SQL com base nas opções a baixo:\n");
-
+        
         //Opções
         Console.WriteLine("""
         1 - Fazer Login/Cadastro como autor
@@ -59,36 +62,35 @@ class Program{
 
                         //formulario
                         Console.Write("Nome de Usuario: ");
-                        string Usuario = Console.ReadLine();
+                        Usuario = Console.ReadLine();
 
                         Console.Write("\nMatricula: ");
                         string Senha = Console.ReadLine();
 
-                        try{
-                            MySqlCommand cm0 = new(){
-                                CommandText = @"select count(*) from pessoa where nome_pessoa = '" + Usuario + "' and matricula = '" + Senha + "'",
-                                Connection = Connect
-                            };
-                            MySqlDataReader Consulta = cm0.ExecuteReader();
+                        //commando
+                        MySqlCommand cm0 = new(){
+                            CommandText = "select count(*) from pessoa where nome_pessoa = '" + Usuario + "' and matricula = '" + Senha + "'",
+                            Connection = Connect
+                        };
+                        MySqlDataReader Consulta = cm0.ExecuteReader();
 
-                            //commando
-                            while(Consulta.Read()){
-                                if(Convert.ToInt32(Consulta[0]) > 0){
-                                    Console.Clear();
-                                    Console.ForegroundColor = ConsoleColor.Green;
-                                    Console.WriteLine("Login Concluido...!!");
-                                    Console.ResetColor();
-                                    bool Permicao = true;
-                                    Lib();
-                                }
-                            }
+                        Consulta.Read();
+                        int num123 = Convert.ToInt32(Consulta[0]);
+                        Consulta.Close();
+
+                        if(num123 > 0){
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("Login Concluido...!!");
+                            pass = true;
+                            Console.ResetColor();
+                            Lib();
                         }
-                        catch (Exception){
+                        else{
                             Console.Clear();
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("Ops... Usuario Invalido.");
                             Console.ResetColor();
-                            bool Permicao = false;
                             Lib();
                         }
                     break;
@@ -150,7 +152,6 @@ class Program{
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Opção invalida...!!!");
                         Console.ResetColor();
-                        
                         Lib();
                     break;
                 }
@@ -182,20 +183,20 @@ class Program{
                 //espaçãmentos
                 string espaco = "                                                                                                     ";
                 string carac = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
-                string tracos = "-----------------------------------------------------------------------------------------------------";
-                
                 Console.WriteLine("");
 
                 //Alteração das cores do console
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.Black;
 
+                //Cabeçãlho
                 Console.WriteLine($"""
                 |{carac[..espaco05]}|
                 |{espaco[..(espaco001 - 1)]}Nome{espaco[..espaco001]}|{espaco[..(espaco002-1)]}Ano{espaco[..espaco002]}|{espaco[..espaco003]}Descrição{espaco[..(espaco003 + 1)]}|{espaco[..espaco004]}Autor{espaco[..espaco004]}|
                 |{carac[..(espaco01 + 2)]}|{carac[..(espaco02 + 2)]}|{carac[..(espaco03 + 2)]}|{carac[..(espaco04 + 2)]}|
                 | {Linha[0]} | {Linha[1]} | {Linha[2]} | {Linha[3]} |
                 """);
+                
                 while (Linha.Read()){
                     //var tamanho
                     int nome_livro = Linha[0].ToString().Length;
@@ -216,11 +217,112 @@ class Program{
                 Lib();
             break;
             case '3':
-                if(Permicao == true){
-                    Console.WriteLine("Funciona");
+                if(pass == true){
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("""
+                    Olá, meu querido autor.  ( ^_^ )/
+                    Pronto para postar seu livro em meu catalogo ???
+                    """);
+
+                    Console.ResetColor();
+                    Console.WriteLine("\nVamos começar!, Primeiro preciso de algunhas informações\n");
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.WriteLine("""
+                    1 - Nome do Livro
+                    2 - Ano em que ele foi lançado
+                    3 - Uma descrição basica de ate 50 caracteres !!
+                    """);
+                    Console.ResetColor();
+
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("\n?4 / obs: O nome do autor deste livro será registrado com o nome matriculado em nossa biblioteca...!");
+                    Console.ResetColor();
+
+                    //entradas
+                    Console.Write("\nNome do livro: ");
+                    string livro = Console.ReadLine();
+
+                    Console.Write("\nAno de lançamento: ");
+                    string ano = Console.ReadLine();
+
+                    Console.Write("\n(Max = 50 Crt) Descrição: ");
+                    string descreva = Console.ReadLine();
+
+                    MySqlCommand consutar = new(){
+                        CommandText = "select id_autor, isbn from livro order by id_autor desc;",
+                        Connection = Connect
+                    };
+                    MySqlDataReader Conn00 = consutar.ExecuteReader();
+                    //data
+                    Conn00.Read();
+                    int id_autor = Convert.ToInt32(Conn00[0]) + 1;
+                    int isbn = Convert.ToInt32(Conn00[1]) + 1;
+                    int str_isbn = isbn.ToString().Length;
+                    Conn00.Close();
+                    
+                    //pro-data
+                    string zeros = "0000000000000";
+                    string env_isbn = $"{zeros[..(6 - str_isbn)]}{isbn}";
+
+                    MySqlCommand addautor = new(){
+                        CommandText = $"insert into autor(nome_autor, id_livro) values ('{Usuario}', {id_autor});",
+                        Connection = Connect
+                    };
+
+                    MySqlCommand addbook = new(){
+                        CommandText = $"insert into livro(nome_livro, ano_livro, descricao, isbn, id_autor) values ('{livro}', {ano}, '{descreva}', {env_isbn}, {id_autor});",
+                        Connection = Connect
+                    };
+
+                    //confirmação
+                    Console.Clear();
+                    Console.WriteLine("Deseja publicar estas informações: ?\n");
+                    Console.WriteLine($"""
+                    1 - Nome do livro: {livro}
+                    2 - Ano de Lançamento: {ano}
+                    3 - Nome do autor: {Usuario}
+                    """);
+                    Console.WriteLine($"\nDescrição: {descreva}\n");
+
+                    //opções
+                    Console.Write("S para Sim, N para Não: ");
+                    string op = Console.ReadLine();
+                    char str = char.Parse(op.ToUpper());
+
+                    if(str == 'S'){
+                        //executar
+                        addautor.ExecuteNonQuery();
+                        addbook.ExecuteNonQuery();
+
+                        //sucesso
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("As informações foram enviadas com sucesso...!!");
+                        Console.ResetColor();
+                        Lib();
+                    }
+                    if(str == 'N'){
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.WriteLine("Envio Cancelado...");
+                        Console.ResetColor();
+                        Lib();
+                    }
+                    else{
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Opção invalida...!!!");
+                        Console.ResetColor();
+                        Lib();
+                    }
                 }
                 else{
-                    Console.WriteLine("Erro..");
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Té Avisei, Façã Login para continuar...!! ");
+                    Console.ResetColor();
+                    Lib();
                 }
             break;
 
@@ -230,7 +332,7 @@ class Program{
                 Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine("Tchau, Espero que tenha gostado...");
                 Console.ResetColor();
-                break;
+            break;
 
             default:
                 Console.Clear();
@@ -238,8 +340,7 @@ class Program{
                 Console.WriteLine("Opção invalida...!!!");
                 Console.ResetColor();
                 Lib();
-                break;
-            }
+            break;
         }
     }
 }
