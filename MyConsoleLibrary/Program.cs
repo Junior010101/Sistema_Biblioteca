@@ -1,12 +1,10 @@
 ﻿//Sistema Biblioteca utilizando SQL e C#
 //importações
 using MySql.Data.MySqlClient;
-using Org.BouncyCastle.Security;
-using ZstdSharp.Unsafe;
 
 class Program{
     //Configurar Conexão
-    public static string Connect_Config = "server=localhost; user=root; database=biblioteca_marcondes; port=3306; password=1234";
+    static readonly string Connect_Config = "server=localhost; user=root; database=biblioteca_marcondes; port=3306; password=1234";
     public static MySqlConnection Connect = new(Connect_Config);
     
     //Conexão
@@ -39,7 +37,7 @@ class Program{
         1 - Fazer Login/Cadastro como autor
         2 - Consultar livros disponiveis 
         3 - Adicionar Livro (Login requerido !!)
-        4 - Remover Livro (Login requerido !!)
+        4 - Remover/alterar Livro (Login requerido !!)
         5 - Sair da Biblioteca
         """);
 
@@ -167,34 +165,28 @@ class Program{
                 Linha.Read();
                 //01
                 int espaco01 = Linha[0].ToString().Length;
-                int espaco001 = (espaco01 + 2 - 4) / 2 + 1;
-                //02
-                int espaco02 = Linha[1].ToString().Length;
-                int espaco002 = (espaco02 + 2 - 3) / 2 + 1;
-                //03
                 int espaco03 = Linha[2].ToString().Length;
-                int espaco003 = (espaco03 + 2 - 9) / 2;
-                //04
                 int espaco04 = Linha[3].ToString().Length;
-                int espaco004 = (espaco04 + 2 - 5) / 2;
-                //05
-                int espaco05 = espaco01 + espaco02 + espaco03 + espaco04 + 11;
 
                 //espaçãmentos
                 string espaco = "                                                                                                     ";
                 string carac = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
-                Console.WriteLine("");
 
                 //Alteração das cores do console
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.Black;
 
+                //par ou impar
+                int num002 = espaco01 % 2; if(num002 == 0){num002 =+ 0;}else{num002 =- 1;}
+                int num003 = espaco03 % 2; if(num003 == 0){num003 =+ 1;}else{num003 =- 0;}
+                int num004 = espaco04 % 2; if(num004 == 0){num004 =+ 0;}else{num004 =- 1;}
+
                 //Cabeçãlho
                 Console.WriteLine($"""
-                |{carac[..espaco05]}|
-                |{espaco[..(espaco001 - 1)]}Nome{espaco[..espaco001]}|{espaco[..(espaco002-1)]}Ano{espaco[..espaco002]}|{espaco[..espaco003]}Descrição{espaco[..(espaco003 + 1)]}|{espaco[..espaco004]}Autor{espaco[..espaco004]}|
-                |{carac[..(espaco01 + 2)]}|{carac[..(espaco02 + 2)]}|{carac[..(espaco03 + 2)]}|{carac[..(espaco04 + 2)]}|
-                | {Linha[0]} | {Linha[1]} | {Linha[2]} | {Linha[3]} |
+                |{carac[..(20 + 5 + 50 + 20 + 4)]}|
+                |{espaco[..(10 - 2)]}Nome{espaco[..(10 - 2)]}|{espaco[..(3 - 2)]}Ano{espaco[..(3 - 2 + 1)]}|{espaco[..(25 - 4)]}Descrição{espaco[..(25 - 5)]}|{espaco[..(10 - 2)]}Autor{espaco[..(10 - 3)]}|
+                |{carac[..20]}|{carac[..6]}|{carac[..50]}|{carac[..20]}|
+                |{espaco[..(10 - espaco01 / 2)]}{Linha[0]}{espaco[..(10 - espaco01 / 2 + num002)]}| {Linha[1]} |{espaco[..(23 + 2 - espaco03 / 2)]}{Linha[2]}{espaco[..(22 + 2 - espaco03 / 2 + num003)]}|{espaco[..(10 - espaco04 / 2)]}{Linha[3]}{espaco[..(10 - espaco04 / 2 + num004)]}|
                 """);
                 
                 while (Linha.Read()){
@@ -205,11 +197,12 @@ class Program{
                     int nome_autor = Linha[3].ToString().Length;
 
                     //par ou impar
-                    int num02 = nome_livro % 2; if(num02 == 0){num02 =+ 1;}else{num02 =- 0;}
-                    int num03 = descricao % 2; if(num03 == 0){num03 =+ 1;}else{num03 =+ 2;}
-                    int num04 = nome_autor % 2; if(num04 == 0){num04 =+ 1;}else{num04 =- 2;}
+                    int num02 = nome_livro % 2; if(num02 == 0){num02 =+ 0;}else{num02 =- 1;}
+                    int num03 = descricao % 2; if(num03 == 0){num03 =+ 1;}else{num03 =- 0;}
+                    int num04 = nome_autor % 2; if(num04 == 0){num04 =+ 0;}else{num04 =- 1;}
 
-                    Console.WriteLine($"|{espaco[..((espaco01 + 2 - nome_livro) / 2)]}{Linha[0]}{espaco[..((espaco01 + 2 - nome_livro) / 2 + num02)]}|{espaco[..((espaco02 + 2 - ano_livro) / 2)]}{Linha[1]}{espaco[..((espaco02 + 2 - ano_livro) / 2)]}|{espaco[..((espaco03 + 2 - descricao) / 2)]}{Linha[2]}{espaco[..((espaco03 + 2 - descricao) / 2 + num03 - 1)]}|{espaco[..((espaco04 + 2 - nome_autor) / 2 + num04)]}{Linha[3]}{espaco[..((espaco04 + 2 - nome_autor) / 2)]}|");
+                    //linhas da tabela
+                    Console.WriteLine($"|{espaco[..(10 - nome_livro / 2 + num02)]}{Linha[0]}{espaco[..(10 - nome_livro / 2)]}|{espaco[..(3 - ano_livro / 2)]}{Linha[1]}{espaco[..(3 - ano_livro / 2)]}|{espaco[..(23 + 2 - descricao / 2)]}{Linha[2]}{espaco[..(22 + 2 - descricao / 2 + num03)]}|{espaco[..(10 - nome_autor / 2 )]}{Linha[3]}{espaco[..(10 - nome_autor / 2 + num04)]}|");
                 }
                 //Reverção
                 Console.ResetColor();
@@ -231,7 +224,7 @@ class Program{
                     Console.WriteLine("""
                     1 - Nome do Livro
                     2 - Ano em que ele foi lançado
-                    3 - Uma descrição basica de ate 50 caracteres !!
+                    3 - Uma descrição basica de até 50 caracteres !!
                     """);
                     Console.ResetColor();
 
@@ -243,78 +236,290 @@ class Program{
                     Console.Write("\nNome do livro: ");
                     string livro = Console.ReadLine();
 
-                    Console.Write("\nAno de lançamento: ");
-                    string ano = Console.ReadLine();
-
-                    Console.Write("\n(Max = 50 Crt) Descrição: ");
-                    string descreva = Console.ReadLine();
-
-                    MySqlCommand consutar = new(){
-                        CommandText = "select id_autor, isbn from livro order by id_autor desc;",
+                    //Existe?
+                    MySqlCommand existe_livro_0 = new(){
+                        CommandText = $"select count(*) from livro where nome_livro = '{livro}';",
                         Connection = Connect
                     };
-                    MySqlDataReader Conn00 = consutar.ExecuteReader();
-                    //data
-                    Conn00.Read();
-                    int id_autor = Convert.ToInt32(Conn00[0]) + 1;
-                    int isbn = Convert.ToInt32(Conn00[1]) + 1;
-                    int str_isbn = isbn.ToString().Length;
-                    Conn00.Close();
-                    
-                    //pro-data
-                    string zeros = "0000000000000";
-                    string env_isbn = $"{zeros[..(6 - str_isbn)]}{isbn}";
+                    MySqlDataReader existe_livro_ofc_0 = existe_livro_0.ExecuteReader();
 
-                    MySqlCommand addautor = new(){
-                        CommandText = $"insert into autor(nome_autor, id_livro) values ('{Usuario}', {id_autor});",
-                        Connection = Connect
-                    };
+                    //execução exite
+                    existe_livro_ofc_0.Read();
+                    int exitente_0 = Convert.ToInt32(existe_livro_ofc_0[0]);
+                    existe_livro_ofc_0.Close();
 
-                    MySqlCommand addbook = new(){
-                        CommandText = $"insert into livro(nome_livro, ano_livro, descricao, isbn, id_autor) values ('{livro}', {ano}, '{descreva}', {env_isbn}, {id_autor});",
-                        Connection = Connect
-                    };
-
-                    //confirmação
-                    Console.Clear();
-                    Console.WriteLine("Deseja publicar estas informações: ?\n");
-                    Console.WriteLine($"""
-                    1 - Nome do livro: {livro}
-                    2 - Ano de Lançamento: {ano}
-                    3 - Nome do autor: {Usuario}
-                    """);
-                    Console.WriteLine($"\nDescrição: {descreva}\n");
-
-                    //opções
-                    Console.Write("S para Sim, N para Não: ");
-                    string op = Console.ReadLine();
-                    char str = char.Parse(op.ToUpper());
-
-                    if(str == 'S'){
-                        //executar
-                        addautor.ExecuteNonQuery();
-                        addbook.ExecuteNonQuery();
-
-                        //sucesso
+                    if(exitente_0 > 0){
                         Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("As informações foram enviadas com sucesso...!!");
-                        Console.ResetColor();
-                        Lib();
-                    }
-                    if(str == 'N'){
-                        Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.WriteLine("Envio Cancelado...");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Já exite um livro registrado com o nome: {livro}, em nosso banco de dados...");
                         Console.ResetColor();
                         Lib();
                     }
                     else{
+                        Console.Write("\nAno de lançamento: ");
+                        string ano = Console.ReadLine();
+
+                        Console.Write("\n(Max = 50 Crt) Descrição: ");
+                        string descreva = Console.ReadLine();
+                        string desk = descreva;
+
+                        if(desk.Length > 50){
+                            desk = descreva[..50];
+                        }
+
+                        MySqlCommand consutar = new(){
+                            CommandText = "select id_autor, isbn from livro order by id_autor desc;",
+                            Connection = Connect
+                        };
+                        MySqlDataReader Conn00 = consutar.ExecuteReader();
+                        //data
+                        Conn00.Read();
+                        int id_autor = Convert.ToInt32(Conn00[0]) + 1;
+                        int isbn = Convert.ToInt32(Conn00[1]) + 1;
+                        int str_isbn = isbn.ToString().Length;
+                        Conn00.Close();
+                        
+                        //pro-data
+                        string zeros = "0000000000000";
+                        string env_isbn = $"{zeros[..(6 - str_isbn)]}{isbn}";
+
+                        MySqlCommand addautor = new(){
+                            CommandText = $"insert into autor(nome_autor, id_livro) values ('{Usuario}', {id_autor});",
+                            Connection = Connect
+                        };
+
+                        MySqlCommand addbook = new(){
+                            CommandText = $"insert into livro(nome_livro, ano_livro, descricao, isbn, id_autor) values ('{livro}', {ano}, '{desk}', '{env_isbn}', {id_autor});",
+                            Connection = Connect
+                        };
+
+                        //confirmação
                         Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Opção invalida...!!!");
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.WriteLine("Deseja publicar estas informações: ?\n");
                         Console.ResetColor();
-                        Lib();
+                        Console.ForegroundColor = ConsoleColor.DarkCyan;
+                        Console.WriteLine($"""
+                        1 - Nome do livro: {livro}
+                        2 - Ano de Lançamento: {ano}
+                        3 - Nome do autor: {Usuario}
+                        """);
+                        Console.WriteLine($"\nDescrição: {desk}\n");
+                        Console.ResetColor();
+
+                        //opções
+                        Console.Write("S para Sim, N para Não: ");
+                        string op = Console.ReadLine();
+                        char str = char.Parse(op.ToUpper());
+
+                        if(str == 'S'){
+                            //executar
+                            addautor.ExecuteNonQuery();
+                            addbook.ExecuteNonQuery();
+
+                            //sucesso
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("As informações foram enviadas com sucesso...!!");
+                            Console.ResetColor();
+                            Lib();
+                        }
+                        if(str == 'N'){
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.WriteLine("Envio Cancelado...");
+                            Console.ResetColor();
+                            Lib();
+                        }
+                        else{
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Opção invalida...!!!");
+                            Console.ResetColor();
+                            Lib();
+                        }
+                    }
+                }
+                else{
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Té Avisei, Façã Login para continuar...!! ");
+                    Console.ResetColor();
+                    Lib();
+                }
+            break;
+
+            case '4':
+                if(pass == true){
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("Olá, meu querido autor. ( ^_^ )/, O que desejas fazer ???\n");
+                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.WriteLine("""
+                    1 - Remover um livro de nossa biblioteca
+                    2 - Atualizar as informações de um livro
+                    """);
+                    Console.ResetColor();
+
+                    //entradas
+                    Console.Write("\nSelecionar Opção: ");
+                    char opc = char.Parse(Console.ReadLine());
+
+                    switch(opc){
+                        case '1':
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                            Console.WriteLine("Bem..., Só algunhas regras:\n");
+                            Console.ResetColor();
+                            Console.ForegroundColor = ConsoleColor.Magenta;
+                            Console.WriteLine("""
+                            1 - para você excluir um livro esté deve ser propriedade sua!
+                            2 - Após ser excluido, não será possivel recuperalo  
+                            """);
+                            Console.ResetColor();
+
+                            //selecionar
+                            Console.Write("\nNome do Livro: ");
+                            string ex_livro = Console.ReadLine();
+
+                            //Existe?
+                            MySqlCommand existe_livro = new(){
+                                CommandText = $"select count(*) from livro where nome_livro = '{ex_livro}';",
+                                Connection = Connect
+                            };
+                            MySqlDataReader existe_livro_ofc = existe_livro.ExecuteReader();
+
+                            //execução exite
+                            existe_livro_ofc.Read();
+                            int exitente = Convert.ToInt32(existe_livro_ofc[0]);
+                            existe_livro_ofc.Close();
+
+                            //Consulta id_autor
+                            MySqlCommand com_autor = new(){
+                                CommandText = $"select id_autor, nome_livro from livro where nome_livro = '{ex_livro}';",
+                                Connection = Connect
+                            };
+                            MySqlDataReader com1_autor = com_autor.ExecuteReader();
+
+                            //execução
+                            com1_autor.Read();
+                            int num0000 = Convert.ToInt32(com1_autor[0]);
+                            com1_autor.Close();
+
+                            //commando
+                            MySqlCommand remove_livro = new(){
+                                CommandText = $"delete from livro where nome_livro = '{ex_livro}';",
+                                Connection = Connect
+                            };
+                            MySqlCommand remove_autor = new(){
+                                CommandText = $"delete from autor where id_autor = {num0000};",
+                                Connection = Connect
+                            };
+
+                            //consulta
+                            MySqlCommand user_livro = new(){
+                                CommandText = $"select count(*) from livro inner join autor on livro.id_autor = autor.id_autor where nome_livro = '{ex_livro}' and nome_autor = '{Usuario}';",
+                                Connection = Connect
+                            };
+                            MySqlDataReader conn_user_livro = user_livro.ExecuteReader();
+
+                            //execução consulta
+                            conn_user_livro.Read();
+                            int num000 = Convert.ToInt32(conn_user_livro[0]);
+                            conn_user_livro.Close();
+
+                            if(num000 > 0 & exitente > 0){
+                                Console.Clear();
+                                Console.WriteLine($"Deseja mesmo remover: {ex_livro}?\n");
+
+                                //opções
+                                Console.Write("S para Sim, N para Não: ");
+                                string conle = Console.ReadLine();
+                                char conler = char.Parse(conle.ToUpper());
+
+                                if(conler == 'S'){
+                                    //delete
+                                    remove_livro.ExecuteNonQuery();
+                                    remove_autor.ExecuteNonQuery();
+
+                                    //alteração no auto_increment
+                                    MySqlCommand consuta_id_livro = new(){
+                                        CommandText = "select id_livro from livro order by id_livro desc;",
+                                        Connection = Connect
+                                    };
+                                    MySqlDataReader Coon_id_livro = consuta_id_livro.ExecuteReader();
+                                    Coon_id_livro.Read();
+                                    int inclement_id_livro = Convert.ToInt32(Coon_id_livro[0]) + 1;
+                                    Coon_id_livro.Close();
+
+                                    //autor
+                                    MySqlCommand auto_increment_autor = new(){
+                                        CommandText = $"alter table autor auto_increment = {inclement_id_livro};",
+                                        Connection = Connect
+                                    };
+
+                                    //livro
+                                    MySqlCommand auto_increment_livro = new(){
+                                        CommandText = $"alter table livro auto_increment = {inclement_id_livro};",
+                                        Connection = Connect
+                                    };
+
+                                    auto_increment_autor.ExecuteNonQuery();
+                                    auto_increment_livro.ExecuteNonQuery();
+
+                                    Console.Clear();
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    Console.WriteLine($"Você Removeu: {ex_livro}, com sucesso...!!");
+                                    Console.ResetColor();
+                                    Lib();
+                                }
+                                if(conler == 'N'){
+                                    Console.Clear();
+                                    Console.ForegroundColor = ConsoleColor.Blue;
+                                    Console.WriteLine("Operação Cancelada...");
+                                    Console.ResetColor();
+                                    Lib();
+                                }
+                                else{
+                                    Console.Clear();
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine("Opção invalida...!!!");
+                                    Console.ResetColor();
+                                    Lib();
+                                }
+                            }
+                            if(exitente > 0 & num000 == 0){
+                                Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("Você não é proprietario deste livro!");
+                                Console.ResetColor();
+                                Lib();
+                            }
+                            else{
+                                Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("O livro que busca não exite em nosso banco de dados...");
+                                Console.ResetColor();
+                                Lib();
+                            }
+                        break;
+
+                        case '2':
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                            Console.WriteLine("Desculpe... Ainda falta adicionar o sistema de Update. ( --)ﾉ(._.`)");
+                            Console.ResetColor();
+                            Lib();
+                        break;
+
+                        default:
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Opção invalida...!!!");
+                            Console.ResetColor();
+                            Lib();
+                        break;
                     }
                 }
                 else{
