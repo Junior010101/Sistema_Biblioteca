@@ -266,30 +266,62 @@ class Program{
                         if(desk.Length > 50){
                             desk = descreva[..50];
                         }
-
                         MySqlCommand consutar = new(){
-                            CommandText = "select id_autor, isbn from livro order by id_autor desc;",
+                            CommandText = "select isbn from livro order by id_autor desc;",
                             Connection = Connect
                         };
                         MySqlDataReader Conn00 = consutar.ExecuteReader();
                         //data
                         Conn00.Read();
-                        int id_autor = Convert.ToInt32(Conn00[0]) + 1;
-                        int isbn = Convert.ToInt32(Conn00[1]) + 1;
+                        int isbn = Convert.ToInt32(Conn00[0]) + 1;
                         int str_isbn = isbn.ToString().Length;
                         Conn00.Close();
-                        
+
+                        MySqlCommand consutar_10 = new(){
+                            CommandText = $"select count(*) from autor where nome_autor = '{Usuario}';",
+                            Connection = Connect
+                        };
+                        MySqlDataReader Conn_010 = consutar_10.ExecuteReader();
+                        //data
+                        Conn_010.Read();
+                        int id_autore = Convert.ToInt32(Conn_010[0]);
+                        Conn_010.Close();
+
+                        MySqlCommand consutar_100 = new(){
+                            CommandText = $"select * from autor order by id_autor desc;",
+                            Connection = Connect
+                        };
+                        MySqlDataReader Conn_0100 = consutar_100.ExecuteReader();
+
+                        //data
+                        Conn_0100.Read();
+                        int id_autor = Convert.ToInt32(Conn_0100[0]);
+                        Conn_0100.Close();
+
+                        if(id_autore == 0){
+                            MySqlCommand addautor = new(){
+                                CommandText = $"insert into autor(nome_autor, id_livro) values ('{Usuario}', {id_autor});",
+                                Connection = Connect
+                            };
+                            addautor.ExecuteNonQuery();
+                        }
+
+                        MySqlCommand consutar_9 = new(){
+                            CommandText = $"select * from autor where nome_autor = '{Usuario}';",
+                            Connection = Connect
+                        };
+                        MySqlDataReader Conn_09 = consutar_9.ExecuteReader();
+                        //data
+                        Conn_09.Read();
+                        int id_auto = Convert.ToInt32(Conn_09[0]);
+                        Conn_09.Close();
+                       
                         //pro-data
                         string zeros = "0000000000000";
                         string env_isbn = $"{zeros[..(6 - str_isbn)]}{isbn}";
 
-                        MySqlCommand addautor = new(){
-                            CommandText = $"insert into autor(nome_autor, id_livro) values ('{Usuario}', {id_autor});",
-                            Connection = Connect
-                        };
-
                         MySqlCommand addbook = new(){
-                            CommandText = $"insert into livro(nome_livro, ano_livro, descricao, isbn, id_autor) values ('{livro}', {ano}, '{desk}', '{env_isbn}', {id_autor});",
+                            CommandText = $"insert into livro(nome_livro, ano_livro, descricao, isbn, id_autor) values ('{livro}', {ano}, '{desk}', '{env_isbn}', {id_auto});",
                             Connection = Connect
                         };
 
@@ -314,7 +346,6 @@ class Program{
 
                         if(str == 'S'){
                             //executar
-                            addautor.ExecuteNonQuery();
                             addbook.ExecuteNonQuery();
 
                             //sucesso
@@ -395,16 +426,16 @@ class Program{
                             int exitente = Convert.ToInt32(existe_livro_ofc[0]);
                             existe_livro_ofc.Close();
 
-                            //Consulta id_autor
+                            //Consulta existe autor
                             MySqlCommand com_autor = new(){
-                                CommandText = $"select id_autor, nome_livro from livro where nome_livro = '{ex_livro}';",
+                                CommandText = $"select count(*) from livro inner join autor on livro.id_autor = autor.id_autor where nome_livro = '{ex_livro}' and nome_autor = '{Usuario}';",
                                 Connection = Connect
                             };
                             MySqlDataReader com1_autor = com_autor.ExecuteReader();
 
                             //execução
                             com1_autor.Read();
-                            int num0000 = Convert.ToInt32(com1_autor[0]);
+                            int num000 = Convert.ToInt32(com1_autor[0]);
                             com1_autor.Close();
 
                             //commando
@@ -412,22 +443,6 @@ class Program{
                                 CommandText = $"delete from livro where nome_livro = '{ex_livro}';",
                                 Connection = Connect
                             };
-                            MySqlCommand remove_autor = new(){
-                                CommandText = $"delete from autor where id_autor = {num0000};",
-                                Connection = Connect
-                            };
-
-                            //consulta
-                            MySqlCommand user_livro = new(){
-                                CommandText = $"select count(*) from livro inner join autor on livro.id_autor = autor.id_autor where nome_livro = '{ex_livro}' and nome_autor = '{Usuario}';",
-                                Connection = Connect
-                            };
-                            MySqlDataReader conn_user_livro = user_livro.ExecuteReader();
-
-                            //execução consulta
-                            conn_user_livro.Read();
-                            int num000 = Convert.ToInt32(conn_user_livro[0]);
-                            conn_user_livro.Close();
 
                             if(num000 > 0 & exitente > 0){
                                 Console.Clear();
@@ -441,7 +456,6 @@ class Program{
                                 if(conler == 'S'){
                                     //delete
                                     remove_livro.ExecuteNonQuery();
-                                    remove_autor.ExecuteNonQuery();
 
                                     //alteração no auto_increment
                                     MySqlCommand consuta_id_livro = new(){
@@ -496,7 +510,7 @@ class Program{
                                 Console.ResetColor();
                                 Lib();
                             }
-                            else{
+                            if(exitente == 0 & num000 == 0){
                                 Console.Clear();
                                 Console.ForegroundColor = ConsoleColor.Red;
                                 Console.WriteLine("O livro que busca não exite em nosso banco de dados...");
