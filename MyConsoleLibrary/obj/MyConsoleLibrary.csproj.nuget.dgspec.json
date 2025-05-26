@@ -1,30 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Marcondes\\OneDrive\\Documentos\\Sistema_Biblioteca_Csharp\\MyConsoleLibrary\\MyConsoleLibrary.csproj": {}
+    "/home/marcondes/Documentos/Sistema_Biblioteca/MyConsoleLibrary/MyConsoleLibrary.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Marcondes\\OneDrive\\Documentos\\Sistema_Biblioteca_Csharp\\MyConsoleLibrary\\MyConsoleLibrary.csproj": {
+    "/home/marcondes/Documentos/Sistema_Biblioteca/MyConsoleLibrary/MyConsoleLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Marcondes\\OneDrive\\Documentos\\Sistema_Biblioteca_Csharp\\MyConsoleLibrary\\MyConsoleLibrary.csproj",
+        "projectUniqueName": "/home/marcondes/Documentos/Sistema_Biblioteca/MyConsoleLibrary/MyConsoleLibrary.csproj",
         "projectName": "MyConsoleLibrary",
-        "projectPath": "C:\\Users\\Marcondes\\OneDrive\\Documentos\\Sistema_Biblioteca_Csharp\\MyConsoleLibrary\\MyConsoleLibrary.csproj",
-        "packagesPath": "C:\\Users\\Marcondes\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Marcondes\\OneDrive\\Documentos\\Sistema_Biblioteca_Csharp\\MyConsoleLibrary\\obj\\",
+        "projectPath": "/home/marcondes/Documentos/Sistema_Biblioteca/MyConsoleLibrary/MyConsoleLibrary.csproj",
+        "packagesPath": "/home/marcondes/.nuget/packages/",
+        "outputPath": "/home/marcondes/Documentos/Sistema_Biblioteca/MyConsoleLibrary/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Marcondes\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/marcondes/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net8.0"
+          "net9.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net8.0": {
-            "targetAlias": "net8.0",
+          "net9.0": {
+            "targetAlias": "net9.0",
             "projectReferences": {}
           }
         },
@@ -37,15 +37,16 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net8.0": {
-          "targetAlias": "net8.0",
+        "net9.0": {
+          "targetAlias": "net9.0",
           "dependencies": {
             "MySql.Data": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[9.3.0, )"
             }
           },
           "imports": [
@@ -64,7 +65,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/home/marcondes/.dotnet/sdk/9.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
